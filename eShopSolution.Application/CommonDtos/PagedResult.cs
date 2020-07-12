@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace eShopSolution.Application.CommonDtos
 {
-    public class PagedViewModel<T>
+    public class PagedResult<T>
     {
-        List<T> Items { set; get; }
+        public List<T> Items { set; get; }
 
         public int TotalRecord { set; get; }
 
