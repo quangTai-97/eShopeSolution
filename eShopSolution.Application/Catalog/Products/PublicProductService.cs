@@ -1,6 +1,6 @@
-﻿using eShopSolution.Application.Catalog.Products.Dtos.Manage;
-using eShopSolution.Application.Catalog.Products.Dtos.Public;
-using eShopSolution.Application.CommonDtos;
+﻿using eShopSolution.ViewModels.Catalog.Product;
+using eShopSolution.ViewModels.Catalog.Product.Manage;
+using eShopSolution.ViewModels.Common;
 using eShopSolution.Data.EF;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using eShopSolution.ViewModels.Catalog.Product.Public;
 
 namespace eShopSolution.Application.Catalog.Products
 {

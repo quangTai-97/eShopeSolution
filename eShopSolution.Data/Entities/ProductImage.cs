@@ -18,7 +18,7 @@ namespace eShopSolution.Data.Entities
 
         public DateTime DateCreated { get; set; }
         public int SortOrder { get; set; }
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
 
         public Product Products { get; set; }
     }
