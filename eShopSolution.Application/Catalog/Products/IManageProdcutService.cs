@@ -1,5 +1,4 @@
 ﻿using eShopSolution.ViewModels.Catalog.Product;
-using eShopSolution.ViewModels.Catalog.Product.Manage;
 using eShopSolution.ViewModels.Common;
 using System;
 using System.Collections.Generic;
@@ -22,6 +21,6 @@ namespace eShopSolution.Application.Catalog.Products
 
         Task AddViewCount(int productId);
 
-        Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+        Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductpagingRequest request);
     }
 }

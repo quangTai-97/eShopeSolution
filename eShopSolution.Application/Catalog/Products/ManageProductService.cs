@@ -1,5 +1,4 @@
 ﻿using eShopSolution.ViewModels.Catalog.Product;
-using eShopSolution.ViewModels.Catalog.Product.Manage;
 using eShopSolution.ViewModels.Common;
 using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
@@ -87,7 +86,7 @@ namespace eShopSolution.Application.Catalog.Products
            return await _context.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductpagingRequest request)
         {
 
             // 1. Select join
