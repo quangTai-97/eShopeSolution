@@ -27,6 +27,7 @@ namespace eShopSolution.Application.Catalog.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         join c in _context.Categories on pic.CategoryId equals c.Id
+                        where pt.LanguageId == request.LanguaegId
                         select new { p, pt, pic };
             // 2. filter
             if (request.categoryId.HasValue && request.categoryId.Value > 0)
@@ -62,13 +63,14 @@ namespace eShopSolution.Application.Catalog.Products
             return pagedResult;
         }
 
-        public async Task<List<ProductViewModel>> GetAll()
+        public async Task<List<ProductViewModel>> GetAll(string languaegId)
         {
             // 1. Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         join c in _context.Categories on pic.CategoryId equals c.Id
+                        where pt.LanguageId == languaegId
                         select new { p, pt, pic };
 
             var data = await 
