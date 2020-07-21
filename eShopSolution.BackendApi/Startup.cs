@@ -58,7 +58,8 @@ namespace eShopSolution.BackendApi
 
 
             //validate fluentValidation, đăng kí tất cả những validator cùng dll
-            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
 
             services.AddSwaggerGen(c =>
             {

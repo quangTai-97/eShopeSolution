@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using eShopSolution.BackendApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eShopSolution.BackendApi.Controllers
 {
+   
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,13 +20,10 @@ namespace eShopSolution.BackendApi.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return Ok();
-        }
 
         public IActionResult Privacy()
         {
+            var user = User.Identity.Name;
             return View();
         }
 

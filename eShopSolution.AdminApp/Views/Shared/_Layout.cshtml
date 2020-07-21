@@ -226,7 +226,7 @@
                     <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <img src="\assets\images\users\avatar-1.jpg" alt="user-image" class="rounded-circle">
                         <span class="pro-user-name ml-1">
-                            Thompson   <i class="mdi mdi-chevron-down"></i>
+                           @User.Identity.Name  <i class="mdi mdi-chevron-down"></i>
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
@@ -256,10 +256,11 @@
                         <div class="dropdown-divider"></div>
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="mdi mdi-logout-variant"></i>
-                            <span>Logout</span>
-                        </a>
+                        <form method="post" asp-controller="User" asp-action="Logout">
+                            <i class="mdi mdi-logout-variant"></i>  <button class="dropdown-item notify-item" type="submit">Đăng xuất</button>
+                            
+                        </form>
+                      
 
                     </div>
                 </li>

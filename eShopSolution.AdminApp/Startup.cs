@@ -1,4 +1,4 @@
- using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using eShopSolution.ViewModels.System;
+using eShopSolution.AdminApp.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace eShopSolution.AdminApp
 {
@@ -23,8 +28,20 @@ namespace eShopSolution.AdminApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddHttpClient();
+            services.AddControllersWithViews()
+                   .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
             IMvcBuilder builder = services.AddRazorPages();
+            services.AddTransient<IUserApiClient, UserApiClient>();
+
+            //chưa đăng nhập về trang login
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
+            {
+                option.LoginPath = "/User/Login/";
+                option.AccessDeniedPath = "/User/Fobidden";
+            });
+                
+
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT");
             #if DEBUG
                         if(enviroment == Environments.Development)
@@ -50,6 +67,7 @@ namespace eShopSolution.AdminApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();
