@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using eShopSolution.Application.Catalog.Products;
 using eShopSolution.Utilities.Exceptions;
 using eShopSolution.ViewModels.Catalog.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace eShopSolution.BackendApi.Controllers
     //api/products
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IPublicProductService _publicProductService;

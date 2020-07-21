@@ -36,6 +36,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPost("register")]
+        //chưa đăng nhập vẫn cho vào
         [AllowAnonymous]
         public async Task<IActionResult> Resgister([FromForm]RegisterRequest request)
         {
