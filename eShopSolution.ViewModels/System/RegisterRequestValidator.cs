@@ -31,6 +31,7 @@ namespace eShopSolution.ViewModels.System
             RuleFor(x => x.Password).NotEmpty().WithMessage("Pass word is required")
                 .MinimumLength(6).WithMessage("Pass is leatest min 6  character");
 
+            //Custom validator
             RuleFor(x => x).Custom((request,context) =>{
                 if(request.Password != request.ComfirmPassword)
                 {
