@@ -19,6 +19,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using eShopSolution.ViewModels.System;
 
 namespace eShopSolution.BackendApi
 {
@@ -49,7 +52,13 @@ namespace eShopSolution.BackendApi
             services.AddTransient <SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
-            services.AddControllers();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+
+
+
+            //validate fluentValidation, đăng kí tất cả những validator cùng dll
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
 
             services.AddSwaggerGen(c =>
             {
