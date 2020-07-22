@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,9 @@ using eShopSolution.AdminApp.Services;
 using eShopSolution.ViewModels.System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -25,9 +28,18 @@ namespace eShopSolution.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string keyWord,int pageIndex = 1, int pageSize = 10)
         {
-            return View();
+            var sessoion = HttpContext.Session.GetString("Token");
+            var requset = new GetUserPagingRequest()
+            {
+                BearerToken = sessoion,
+                Keyword = keyWord,
+                pageIndex = pageIndex,
+                pageSize = pageSize
+            };
+            var data = await _userApiClient.GetUserPaging(requset);
+            return View(data);
         }
 
         [HttpGet]
@@ -42,6 +54,7 @@ namespace eShopSolution.AdminApp.Controllers
         {
             //logout session cũ;
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
             return RedirectToAction("Login", "User");
         }
         [HttpPost]
@@ -56,6 +69,8 @@ namespace eShopSolution.AdminApp.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
+
+            HttpContext.Session.SetString("Token", token);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(userPrincipal), authProperties);
 

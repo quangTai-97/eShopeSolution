@@ -29,17 +29,28 @@ namespace eShopSolution.AdminApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews()
-                   .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
-            IMvcBuilder builder = services.AddRazorPages();
-            services.AddTransient<IUserApiClient, UserApiClient>();
-
             //chưa đăng nhập về trang login
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
             {
                 option.LoginPath = "/User/Login/";
                 option.AccessDeniedPath = "/User/Fobidden";
             });
+            services.AddControllersWithViews()
+                   .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
+
+            //Session
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
+            services.AddTransient<IUserApiClient, UserApiClient>();
+
+            IMvcBuilder builder = services.AddRazorPages();
+
+
+
+            
                 
 
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT");
@@ -68,10 +79,13 @@ namespace eShopSolution.AdminApp
             app.UseStaticFiles();
 
             app.UseAuthentication();
+           
             app.UseRouting();
 
             app.UseAuthorization();
 
+           app.UseSession();
+          
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -44,8 +44,8 @@ namespace eShopSolution.BackendApi
                 .AddEntityFrameworkStores<EShopDbContext>()
                 .AddDefaultTokenProviders();
             //Declare DI
-            services.AddTransient<IPublicProductService, PublicProductService>();
-            services.AddTransient<IManageProdcutService, ManageProductService>();
+          
+            services.AddTransient<IProdcutService, ProductService>();
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IUserService, UserService>();
@@ -54,6 +54,7 @@ namespace eShopSolution.BackendApi
 
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+           
 
 
 
@@ -61,6 +62,7 @@ namespace eShopSolution.BackendApi
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
 
+            
             services.AddSwaggerGen(c =>
             {
 
@@ -147,7 +149,7 @@ namespace eShopSolution.BackendApi
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.UseSwagger();
             //Generate html/css
             app.UseSwaggerUI(c =>
