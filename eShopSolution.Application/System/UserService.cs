@@ -42,7 +42,7 @@ namespace eShopSolution.Application.System
             {
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
-                   new Claim(ClaimTypes.Name,request.UserName),
+                new Claim(ClaimTypes.Name,request.UserName),
                 new Claim(ClaimTypes.Role,string.Join(";",roles)),
             };
             //Generate key

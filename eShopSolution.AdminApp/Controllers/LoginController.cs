@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,55 +11,55 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace eShopSolution.AdminApp.Controllers
 {
-    public class UserController : BaseController
+    public class LoginController : Controller
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
-        public UserController(IUserApiClient userApiClient,IConfiguration configuration)
+        public LoginController(IUserApiClient userApiClient, IConfiguration configuration)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
         }
-        public async Task<IActionResult> Index(string keyWord,int pageIndex = 1, int pageSize = 10)
-        {
-            var sessoion = HttpContext.Session.GetString("Token");
-            var requset = new GetUserPagingRequest()
-            {
-                BearerToken = sessoion,
-                Keyword = keyWord,
-                pageIndex = pageIndex,
-                pageSize = pageSize
-            };
-            var data = await _userApiClient.GetUserPaging(requset);
-            return View(data);
-        }
-
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Index()
         {
+            //logout session cũ;
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> Create(RegisterRequest request)
+        public async Task<IActionResult> Logout()
+        {
+            //logout session cũ;
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
+            return RedirectToAction("Index", "Login");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return View(ModelState);
-            var result = await _userApiClient.RegisterUser(request);
-            if(result)
-                return RedirectToAction("Index", "User");
-            return View(request);
-            
-        }
+            var token = await _userApiClient.Authenticate(request);
+            var userPrincipal = this.ValidateToken(token);
+            var authProperties = new AuthenticationProperties
+            {
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                IsPersistent = false
+            };
 
-       
+            HttpContext.Session.SetString("Token", token);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(userPrincipal), authProperties);
+
+            return RedirectToAction("Index", "Home");
+        }
 
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
@@ -79,6 +78,5 @@ namespace eShopSolution.AdminApp.Controllers
 
             return principal;
         }
-
     }
 }
