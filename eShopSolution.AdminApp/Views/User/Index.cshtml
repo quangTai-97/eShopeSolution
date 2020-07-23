@@ -2,66 +2,87 @@
 @model PagedResult<eShopSolution.ViewModels.System.UserViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-               FirstName
-            </th>
-            <th>
-                LastName
-            </th>
-            <th>
-                SDT
-            </th>
-            <th>
-                UserName
-            </th>
-            <th>
-                Email
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Items) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LasttName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@*<p>
+        <a asp-action="Create">Create New</a>
+    </p>*@
+<h4><b>Danh sách người dùng</b></h4>
+<div class="row">
+    <div class="col-12">
+
+        <div class="page-title-box">
+            <div class="page-title-left">
+                <ol class="breadcrumb p-0 m-0" style="float:left !important">
+                    @*<li class="breadcrumb-item"><a href="#">Velonic</a></li>*@
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Danh sách người dùng</li>
+                </ol>
+            </div>
+            <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+<div class="card-header">
+    <button class="btn btn-success" asp-action="Create" asp-controller="User">Tạo mới</button>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+
+
+            <div class="card-body table-responsive">
+
+                <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            @*<th>ID</th>*@
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>Phone</th>
+                            <th>UserName</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                @*<td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>*@
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LasttName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
