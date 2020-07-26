@@ -62,7 +62,22 @@ namespace eShopSolution.BackendApi.Controllers
             return Ok(products);
         }
 
-        
+        [HttpPut("{id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id,[FromBody]RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.RoleAssign(id,request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
+
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody]UserUpdateRequest request)
         {

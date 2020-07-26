@@ -1,0 +1,40 @@
+﻿@model eShopSolution.ViewModels.System.RoleAssignRequest
+
+@{
+    ViewData["Title"] = "RoleAssign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>RoleAssign</h1>
+
+<h4>RoleAssignRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RoleAssign">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id"/>
+            @for(var i = 0 ; i < Model.Roles.Count ; i++)
+            {
+                <div class="form-group">
+                    <label>
+                        @Model.Roles[i].Name
+                        <input type="checkbox" asp-for="Roles[i].Selected" class="form-control" />
+                        <input type="hidden" asp-for="Roles[i].Id" />
+                        <input type="hidden" asp-for="Roles[i].Name" />
+                    </label>
+                    <span asp-validation-for="Roles[i].Name" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Lưu Lại" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

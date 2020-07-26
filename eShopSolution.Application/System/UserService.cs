@@ -1,4 +1,4 @@
-﻿using eShopSolution.Data.Entities;
+﻿  using eShopSolution.Data.Entities;
 using eShopSolution.Utilities.Exceptions;
 using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.System;
@@ -33,7 +33,7 @@ namespace eShopSolution.Application.System
         public async Task<ApiResult<string>> Authencate(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null) return null;
+            if (user == null) return new ApiErrorResult<string>("Tài khoản không tồn tại");
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RemmemberMe, true);
             if (!result.Succeeded)
                 return null;
@@ -66,9 +66,9 @@ namespace eShopSolution.Application.System
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
-            if(!string.IsNullOrEmpty(request.Keyword))
+            if (!string.IsNullOrEmpty(request.Keyword))
             {
-                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword));
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword) || x.LastName.Contains(request.Keyword));
             }
 
 
@@ -101,6 +101,7 @@ namespace eShopSolution.Application.System
         public async Task<ApiResult<UserUpdateRequest>> GetUserById(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
+            var roles = await _userManager.GetRolesAsync(user);
             var result = new UserUpdateRequest()
             {
                 Email = user.Email,
@@ -109,7 +110,8 @@ namespace eShopSolution.Application.System
                 PhoneNumber = user.PhoneNumber,
                 Dob = user.Dob,
                 Id = userId,
-                Username = user.UserName
+                Username = user.UserName,
+                RoleAssign = roles
                 
             };
             return new ApiSuccessResult<UserUpdateRequest>(result);
@@ -187,6 +189,36 @@ namespace eShopSolution.Application.System
             }
             return new ApiErrorResult<bool>("Xóa không thành công");
 
+        }
+
+        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>("Tài khoản không tồn tại");
+            }
+            var removeRoles = request.Roles.Where(x => x.Selected == false).Select(x=>x.Name).ToList();
+            foreach (var roleName in removeRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == true)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName);
+                }
+            }
+           // await _userManager.RemoveFromRolesAsync(user, removeRoles);
+
+            var AddedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
+            foreach(var roleName in AddedRoles)
+            {
+                if( await _userManager.IsInRoleAsync(user, roleName) == false)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName);
+                }    
+            }    
+                return new ApiSuccessResult<bool>();
+            
+           
         }
     }
 }
