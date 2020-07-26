@@ -55,8 +55,8 @@
                         {
                             <tr>
                                 @*<td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>*@
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>*@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FirstName)
                                 </td>
@@ -74,13 +74,14 @@
                                 </td>
                                 <td>
                                     @Html.ActionLink("Update", "Update", new { userId = item.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Delete", "Delete", new {  id=item.Id  })
+                                    @Html.ActionLink("Details", "Details", new { Id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
+                @await Component.InvokeAsync("Pager",Model)
             </div>
         </div>
     </div>
