@@ -28,7 +28,7 @@ namespace eShopSolution.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var resultToken =await _userService.Authencate(request);
-            if(string.IsNullOrEmpty(resultToken))
+            if(string.IsNullOrEmpty(resultToken.Message))
             {
                 return BadRequest("userName or password is incorrect");
             }
@@ -43,10 +43,11 @@ namespace eShopSolution.BackendApi.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+          
             var result = await _userService.Register(request);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest("register is unsuccesful");
+                return BadRequest(result.Message);
             }
 
             return Ok();
@@ -59,6 +60,35 @@ namespace eShopSolution.BackendApi.Controllers
             var products = await _userService.GetUserPaging(requets);
             //trả về 200
             return Ok(products);
+        }
+
+        
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody]UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Update(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
+        //GET: http://localhost/api/users?id=
+        [HttpGet("users")]
+        public async Task<IActionResult> Update(Guid Id)
+        {
+            var result = await _userService.GetUserById(Id);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
         }
     }
 }

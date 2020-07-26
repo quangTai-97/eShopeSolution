@@ -23,7 +23,7 @@ namespace eShopSolution.AdminApp.Services
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
         }
-        public async Task<string> Authenticate(LoginRequest request)
+        public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
             //POST
             var json = JsonConvert.SerializeObject(request);
@@ -33,12 +33,27 @@ namespace eShopSolution.AdminApp.Services
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var response = await client.PostAsync("/api/users/authenticate/", httpContent);
 
+            if(response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(await response.Content.ReadAsStringAsync());
             //Get token;
-            var token =await response.Content.ReadAsStringAsync();
-            return token;
-        } 
 
-        public async Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());
+        }
+
+        public async  Task<ApiResult<UserUpdateRequest>> GetUserById(Guid id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+        
+            var response = await client.GetAsync($"/api/Users/users?Id={id}");
+
+            var body = await response.Content.ReadAsStringAsync();
+            var users = JsonConvert.DeserializeObject<ApiSuccessResult<UserUpdateRequest>>(body);
+            return users;
+        }
+
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
         
            
@@ -51,11 +66,11 @@ namespace eShopSolution.AdminApp.Services
             var response = await client.GetAsync($"/api/Users/paging?pageIndex=" +
                 $"{request.pageIndex}&pageSize={request.pageSize}&keyword={request.Keyword}");
             var body = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<PagedResult<UserViewModel>>(body);
+            var users = JsonConvert.DeserializeObject<ApiSuccessResult<PagedResult<UserViewModel>>>(body);
             return users;
         }
 
-        public async Task<bool> RegisterUser(RegisterRequest request)
+        public async Task<ApiResult<bool>> RegisterUser(RegisterRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -63,10 +78,31 @@ namespace eShopSolution.AdminApp.Services
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var response = await client.PostAsync("/api/users/register", httpContent);
-
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
             //Get token;
             //var token = await response.Content.ReadAsStringAsync();
-            return response.IsSuccessStatusCode;
+
+        }
+
+        public async Task<ApiResult<bool>> UpdateUser(UserUpdateRequest request)
+        {
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.PutAsync($"api/users/update", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            //Get token;
+            //var token = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace eShopSolution.AdminApp.Controllers
                 pageSize = pageSize
             };
             var data = await _userApiClient.GetUserPaging(requset);
-            return View(data);
+            return View(data.ResultObject);
         }
 
         [HttpGet]
@@ -54,13 +54,38 @@ namespace eShopSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View(ModelState);
             var result = await _userApiClient.RegisterUser(request);
-            if(result)
+            if(result.IsSuccessed)
                 return RedirectToAction("Index", "User");
+
+            ModelState.AddModelError("", result.Message);
             return View(request);
             
         }
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(ModelState);
+            var result = await _userApiClient.UpdateUser(request);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index", "User");
+            return View(request);
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid userId)
+        {
+            //var user = _userApiClient
+            var result = await _userApiClient.GetUserById(userId);
+            if (result.IsSuccessed)
+                return View(result.ResultObject);
+            return RedirectToAction("Index", "User");
+
+        }
 
        
+
+
 
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
