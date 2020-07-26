@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -170,6 +171,22 @@ namespace eShopSolution.Application.System
                 return new ApiSuccessResult<bool>();
             }
             return new ApiErrorResult<bool>("Cập nhật không thành công");
+        }
+
+        public async Task<ApiResult<bool>> Delete(Guid userId)
+        {
+            var user = _userManager.FindByIdAsync(userId.ToString());
+            if(user == null)
+            {
+                return new ApiErrorResult<bool>("User không tồn tại");
+            }    
+            var result = await _userManager.DeleteAsync(user.Result);
+            if(result.Succeeded)
+            {
+                return new ApiSuccessResult<bool>();
+            }
+            return new ApiErrorResult<bool>("Xóa không thành công");
+
         }
     }
 }

@@ -18,6 +18,8 @@ namespace eShopSolution.AdminApp.Services
 
         Task<ApiResult<bool>> RegisterUser(RegisterRequest request);
 
+        Task<ApiResult<bool>> DeleteUser(UserDeleteRequest request);
+
         Task<ApiResult<bool>> UpdateUser(UserUpdateRequest request);
 
     }

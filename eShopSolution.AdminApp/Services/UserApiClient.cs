@@ -40,6 +40,23 @@ namespace eShopSolution.AdminApp.Services
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());
         }
 
+        public async Task<ApiResult<bool>> DeleteUser(UserDeleteRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+       
+            var response = await client.DeleteAsync($"/api/users/delete?Id={request.Id}");
+
+            var body = await response.Content.ReadAsStringAsync();
+            if(response.IsSuccessStatusCode)
+            {
+                return new ApiSuccessResult<bool>();
+            }
+            return  new ApiErrorResult<bool>("Xóa không thành công");
+    
+        }
+
         public async  Task<ApiResult<UserUpdateRequest>> GetUserById(Guid id)
         {
             var client = _httpClientFactory.CreateClient();
