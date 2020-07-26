@@ -90,6 +90,8 @@ namespace eShopSolution.Application.System
             var pagedResult = new PagedResult<UserViewModel>()
             {
                 TotalRecord = totalRow,
+                PageSize = request.pageSize,
+                PageIndex = request.pageIndex,
                 Items = data
             };
             return new ApiSuccessResult<PagedResult<UserViewModel>>(pagedResult);
@@ -105,7 +107,9 @@ namespace eShopSolution.Application.System
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Dob = user.Dob,
-                Id = userId
+                Id = userId,
+                Username = user.UserName
+                
             };
             return new ApiSuccessResult<UserUpdateRequest>(result);
         }
@@ -156,6 +160,7 @@ namespace eShopSolution.Application.System
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
+
 
             
 

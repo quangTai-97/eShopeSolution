@@ -20,6 +20,8 @@ namespace eShopSolution.ViewModels.System
         public string Email { get; set; }
         [Display(Name = "Số điện thoại")]
         public string PhoneNumber { get; set; }
-    
+        [Display(Name = "Tài khoản")]
+        public string Username { get; set; }
+
     }
 }
