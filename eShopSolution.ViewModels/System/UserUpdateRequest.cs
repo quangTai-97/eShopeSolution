@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eShopSolution.ViewModels.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -22,6 +23,8 @@ namespace eShopSolution.ViewModels.System
         public string PhoneNumber { get; set; }
         [Display(Name = "Tài khoản")]
         public string Username { get; set; }
+
+        public IList<string> RoleAssign { get; set; }
 
     }
 }

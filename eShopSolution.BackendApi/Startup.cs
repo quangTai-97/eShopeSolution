@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using eShopSolution.ViewModels.System;
+using eShopSolution.Application.System.Role;
 
 namespace eShopSolution.BackendApi
 {
@@ -49,6 +50,7 @@ namespace eShopSolution.BackendApi
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleServiec, RoleService>();
             services.AddTransient <SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 

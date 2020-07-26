@@ -19,5 +19,10 @@ namespace eShopSolution.Application.System
         Task<ApiResult<UserUpdateRequest>> GetUserById(Guid userId);
         Task<ApiResult<bool>> Update(UserUpdateRequest request);
 
+        Task<ApiResult<bool>> Delete(Guid userId);
+
+        Task<ApiResult<bool>> RoleAssign(Guid id,RoleAssignRequest request);
+
+
     }
 }

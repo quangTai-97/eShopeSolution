@@ -1,5 +1,6 @@
 ﻿using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -18,10 +19,12 @@ namespace eShopSolution.AdminApp.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+      
         public UserApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+           
         }
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
@@ -38,6 +41,23 @@ namespace eShopSolution.AdminApp.Services
             //Get token;
 
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<ApiResult<bool>> DeleteUser(UserDeleteRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+       
+            var response = await client.DeleteAsync($"/api/users/delete?Id={request.Id}");
+
+            var body = await response.Content.ReadAsStringAsync();
+            if(response.IsSuccessStatusCode)
+            {
+                return new ApiSuccessResult<bool>();
+            }
+            return  new ApiErrorResult<bool>("Xóa không thành công");
+    
         }
 
         public async  Task<ApiResult<UserUpdateRequest>> GetUserById(Guid id)
@@ -86,6 +106,23 @@ namespace eShopSolution.AdminApp.Services
             //Get token;
             //var token = await response.Content.ReadAsStringAsync();
 
+        }
+
+        public async Task<ApiResult<bool>> RoleAssign(Guid Id, RoleAssignRequest request)
+        {
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.PutAsync($"api/users/{Id}/roles", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            //Get token;
+            //var token = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+           return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
         public async Task<ApiResult<bool>> UpdateUser(UserUpdateRequest request)
